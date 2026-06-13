@@ -1,0 +1,96 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String         @id @default(uuid())
+  email         String         @unique
+  name          String
+  password      String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  memberships   GroupMember[]
+  paidExpenses  Expense[]      @relation("PaidExpenses")
+  expenseSplits ExpenseSplit[]
+  paymentsSent  Payment[]      @relation("PaymentsSent")
+  paymentsRcvd  Payment[]      @relation("PaymentsReceived")
+}
+
+model Group {
+  id          String         @id @default(uuid())
+  name        String
+  currency    String         @default("INR")
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  members     GroupMember[]
+  expenses    Expense[]
+  payments    Payment[]
+  anomalies   ImportAnomaly[]
+}
+
+model GroupMember {
+  id        String    @id @default(uuid())
+  userId    String
+  groupId   String
+  joinedAt  DateTime  @default(now())
+  leftAt    DateTime?
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  group     Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, groupId])
+}
+
+model Expense {
+  id          String         @id @default(uuid())
+  groupId     String
+  paidById    String
+  description String
+  amount      Float
+  currency    String
+  date        DateTime
+  splitType   String         // EQUAL, PERCENTAGE, SHARES, EXACT
+  createdAt   DateTime       @default(now())
+  group       Group          @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  paidBy      User           @relation("PaidExpenses", fields: [paidById], references: [id])
+  splits      ExpenseSplit[]
+}
+
+model ExpenseSplit {
+  id         String   @id @default(uuid())
+  expenseId  String
+  userId     String
+  amount     Float    // Calculated debt in base currency
+  shareValue Float?   // The original percentage or share count (e.g. "30" for 30%)
+  expense    Expense  @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@unique([expenseId, userId])
+}
+
+model Payment {
+  id        String   @id @default(uuid())
+  groupId   String
+  payerId   String
+  payeeId   String
+  amount    Float
+  date      DateTime
+  createdAt DateTime @default(now())
+  group     Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  payer     User     @relation("PaymentsSent", fields: [payerId], references: [id])
+  payee     User     @relation("PaymentsReceived", fields: [payeeId], references: [id])
+}
+
+model ImportAnomaly {
+  id         String   @id @default(uuid())
+  groupId    String
+  rowNumber  Int
+  issueType  String
+  resolution String
+  createdAt  DateTime @default(now())
+  group      Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+}
