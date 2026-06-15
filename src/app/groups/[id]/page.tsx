@@ -97,8 +97,8 @@ export default async function GroupDetailPage(props: { params: Promise<{ id: str
     <div className="max-w-5xl mx-auto p-6 space-y-8">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold">{group.name}</h1>
-          <p className="text-gray-500">Base Currency: {group.currency}</p>
+          <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-sky-400 tracking-tight">{group.name}</h1>
+          <p className="text-slate-400 mt-2 font-medium">Base Currency: <span className="text-teal-400">{group.currency}</span></p>
         </div>
         <div className="flex gap-4">
           <Link href="/dashboard"><Button variant="outline">Dashboard</Button></Link>
@@ -110,20 +110,20 @@ export default async function GroupDetailPage(props: { params: Promise<{ id: str
         
         {/* Balances Column */}
         <div className="space-y-6">
-          <div className="bg-white p-6 rounded-xl shadow-md border">
-            <h2 className="text-xl font-semibold mb-4">Your Balances</h2>
+          <div className="bg-white/5 backdrop-blur-xl p-6 rounded-2xl shadow-2xl border border-white/10">
+            <h2 className="text-xl font-semibold mb-4 text-slate-100">Your Balances</h2>
             {myOwes.length === 0 && owedToMe.length === 0 && (
-              <p className="text-gray-500">You are completely settled up!</p>
+              <p className="text-slate-400 text-sm">You are completely settled up!</p>
             )}
             
             {myOwes.length > 0 && (
-              <div className="mb-4">
-                <h3 className="font-medium text-red-600 mb-2">You Owe:</h3>
-                <ul className="space-y-2">
+              <div className="mb-5">
+                <h3 className="font-medium text-red-400 mb-3 text-sm uppercase tracking-wider">You Owe</h3>
+                <ul className="space-y-3">
                   {myOwes.map((b, i) => (
-                    <li key={i} className="flex justify-between text-sm border-b pb-1">
-                      <span>{b.toName}</span>
-                      <span className="font-semibold text-red-600">{b.amount.toFixed(2)} {group.currency}</span>
+                    <li key={i} className="flex justify-between text-sm bg-red-500/10 p-3 rounded-lg border border-red-500/20">
+                      <span className="text-slate-200">{b.toName}</span>
+                      <span className="font-bold text-red-400">{b.amount.toFixed(2)} {group.currency}</span>
                     </li>
                   ))}
                 </ul>
@@ -132,12 +132,12 @@ export default async function GroupDetailPage(props: { params: Promise<{ id: str
             
             {owedToMe.length > 0 && (
               <div>
-                <h3 className="font-medium text-green-600 mb-2">You are Owed:</h3>
-                <ul className="space-y-2">
+                <h3 className="font-medium text-teal-400 mb-3 text-sm uppercase tracking-wider">You are Owed</h3>
+                <ul className="space-y-3">
                   {owedToMe.map((b, i) => (
-                    <li key={i} className="flex justify-between text-sm border-b pb-1">
-                      <span>{b.fromName}</span>
-                      <span className="font-semibold text-green-600">{b.amount.toFixed(2)} {group.currency}</span>
+                    <li key={i} className="flex justify-between text-sm bg-teal-500/10 p-3 rounded-lg border border-teal-500/20">
+                      <span className="text-slate-200">{b.fromName}</span>
+                      <span className="font-bold text-teal-400">{b.amount.toFixed(2)} {group.currency}</span>
                     </li>
                   ))}
                 </ul>
@@ -145,15 +145,15 @@ export default async function GroupDetailPage(props: { params: Promise<{ id: str
             )}
           </div>
 
-          <div className="bg-white p-6 rounded-xl shadow-md border">
-            <h2 className="text-xl font-semibold mb-4">Members</h2>
-            <ul className="space-y-3">
+          <div className="bg-white/5 backdrop-blur-xl p-6 rounded-2xl shadow-2xl border border-white/10">
+            <h2 className="text-xl font-semibold mb-4 text-slate-100">Members</h2>
+            <ul className="space-y-4">
               {group.members.map(m => (
-                <li key={m.id} className="text-sm">
-                  <div className="font-medium">{m.user.name} {m.userId === session.id && '(You)'}</div>
-                  <div className="text-xs text-gray-500">
+                <li key={m.id} className="text-sm flex flex-col gap-1">
+                  <div className="font-medium text-slate-200">{m.user.name} {m.userId === session.id && <span className="text-teal-400 text-xs ml-1 bg-teal-500/10 px-2 py-0.5 rounded-full">You</span>}</div>
+                  <div className="text-xs text-slate-500">
                     Joined: {new Date(m.joinedAt).toLocaleDateString()}
-                    {m.leftAt && <span className="text-red-500"> | Left: {new Date(m.leftAt).toLocaleDateString()}</span>}
+                    {m.leftAt && <span className="text-red-400"> | Left: {new Date(m.leftAt).toLocaleDateString()}</span>}
                   </div>
                 </li>
               ))}
@@ -165,36 +165,39 @@ export default async function GroupDetailPage(props: { params: Promise<{ id: str
         <div className="md:col-span-2 space-y-6">
           
           {group.anomalies.length > 0 && (
-            <div className="bg-blue-50 border-blue-200 border p-6 rounded-xl">
-              <h2 className="text-lg font-semibold text-blue-800 mb-2">Import Report Summary</h2>
-              <div className="max-h-40 overflow-y-auto space-y-2 text-sm text-blue-900">
+            <div className="bg-sky-900/20 backdrop-blur-md border-sky-500/30 border p-6 rounded-2xl shadow-lg">
+              <h2 className="text-lg font-semibold text-sky-300 mb-3 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+                Import Report Summary
+              </h2>
+              <div className="max-h-48 overflow-y-auto space-y-3 text-sm text-sky-100 pr-2 custom-scrollbar">
                 {group.anomalies.map(anom => (
-                  <div key={anom.id} className="bg-white p-2 rounded">
-                    <strong>Row {anom.rowNumber}:</strong> {anom.issueType} <br/>
-                    <span className="text-gray-600">Resolution: {anom.resolution}</span>
+                  <div key={anom.id} className="bg-white/5 border border-white/10 p-3 rounded-xl">
+                    <strong className="text-sky-300">Row {anom.rowNumber}:</strong> {anom.issueType} <br/>
+                    <span className="text-sky-200/70 text-xs mt-1 block">Resolution: {anom.resolution}</span>
                   </div>
                 ))}
               </div>
             </div>
           )}
 
-          <div className="bg-white p-6 rounded-xl shadow-md border">
-            <h2 className="text-xl font-semibold mb-4">Recent Expenses</h2>
+          <div className="bg-white/5 backdrop-blur-xl p-6 rounded-2xl shadow-2xl border border-white/10">
+            <h2 className="text-xl font-semibold mb-6 text-slate-100">Recent Expenses</h2>
             {group.expenses.length === 0 ? (
-              <p className="text-gray-500 text-center py-8">No expenses yet. Import your CSV to get started.</p>
+              <p className="text-slate-500 text-center py-12">No expenses yet. Import your CSV to get started.</p>
             ) : (
-              <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
+              <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
                 {group.expenses.map(exp => (
-                  <div key={exp.id} className="border p-4 rounded-lg flex justify-between items-start">
+                  <div key={exp.id} className="border border-white/10 bg-white/5 p-5 rounded-xl flex justify-between items-start hover:bg-white/10 hover:border-teal-500/30 transition-all group/exp">
                     <div>
-                      <div className="font-semibold text-lg">{exp.description}</div>
-                      <div className="text-sm text-gray-500">{new Date(exp.date).toLocaleDateString()} • Paid by {exp.paidBy.name}</div>
-                      <div className="text-xs text-gray-400 mt-1">Split Type: {exp.splitType}</div>
+                      <div className="font-semibold text-lg text-slate-200 group-hover/exp:text-teal-300 transition-colors">{exp.description}</div>
+                      <div className="text-sm text-slate-400 mt-1">{new Date(exp.date).toLocaleDateString()} • Paid by <span className="text-slate-300 font-medium">{exp.paidBy.name}</span></div>
+                      <div className="text-xs font-mono text-teal-500/70 mt-2 bg-teal-500/10 inline-block px-2 py-0.5 rounded">SPLIT: {exp.splitType}</div>
                     </div>
                     <div className="text-right">
-                      <div className="font-bold text-lg">{exp.amount} {exp.currency}</div>
+                      <div className="font-bold text-xl text-slate-100">{exp.amount} <span className="text-sm font-normal text-slate-400">{exp.currency}</span></div>
                       {exp.currency !== group.currency && (
-                        <div className="text-xs text-orange-500">
+                        <div className="text-xs text-amber-400/80 mt-1">
                           (Converted to {group.currency} internally)
                         </div>
                       )}

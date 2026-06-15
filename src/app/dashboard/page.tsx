@@ -28,26 +28,26 @@ export default async function DashboardPage() {
         </form>
       </div>
 
-      <div className="bg-white rounded-xl shadow p-6">
+      <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-6">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold">Your Groups</h2>
+          <h2 className="text-xl font-semibold text-slate-200">Your Groups</h2>
           <Link href="/groups/new">
-            <Button>Create New Group</Button>
+            <Button className="bg-teal-600 hover:bg-teal-500 text-white shadow-lg shadow-teal-500/20 transition-all">Create New Group</Button>
           </Link>
         </div>
 
         {user?.memberships.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">
+          <div className="text-center py-12 text-slate-400">
             You aren't part of any groups yet. Create one to get started!
           </div>
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {user?.memberships.map((m) => (
               <Link key={m.groupId} href={`/groups/${m.groupId}`}>
-                <div className="p-4 border rounded-lg hover:border-blue-500 hover:shadow-md transition cursor-pointer">
-                  <h3 className="font-semibold text-lg">{m.group.name}</h3>
-                  <p className="text-sm text-gray-500">Joined: {new Date(m.joinedAt).toLocaleDateString()}</p>
-                  {m.leftAt && <p className="text-sm text-red-500">Left: {new Date(m.leftAt).toLocaleDateString()}</p>}
+                <div className="p-5 border border-white/10 bg-white/5 rounded-xl hover:bg-white/10 hover:border-teal-500/50 hover:shadow-[0_0_20px_rgba(20,184,166,0.15)] transition-all cursor-pointer group">
+                  <h3 className="font-semibold text-lg text-slate-200 group-hover:text-teal-400 transition-colors">{m.group.name}</h3>
+                  <p className="text-sm text-slate-400 mt-2">Joined: {new Date(m.joinedAt).toLocaleDateString()}</p>
+                  {m.leftAt && <p className="text-sm text-red-400 mt-1">Left: {new Date(m.leftAt).toLocaleDateString()}</p>}
                 </div>
               </Link>
             ))}

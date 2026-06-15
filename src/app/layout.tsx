@@ -25,9 +25,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
     >
-      <body className="min-h-full flex flex-col bg-gradient-to-br from-slate-50 to-teal-50 text-slate-900 selection:bg-teal-200">
+      <body className="min-h-full flex flex-col bg-slate-950 text-slate-100 selection:bg-teal-500/30">
+        <div className="fixed inset-0 z-[-1] bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-teal-900/20 via-slate-950 to-slate-950"></div>
         {children}
       </body>
     </html>

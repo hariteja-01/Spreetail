@@ -36,49 +36,50 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-xl shadow-md">
-        <h1 className="text-2xl font-bold text-center">Register for FairShare</h1>
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="max-w-md w-full bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-8">
+        <h1 className="text-3xl font-bold text-center mb-8 text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-sky-400">FairShare</h1>
+        <h2 className="text-xl font-semibold mb-6 text-slate-200">Register an account</h2>
         
-        {error && <div className="p-3 text-sm text-red-500 bg-red-50 rounded">{error}</div>}
+        {error && <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-3 rounded-lg mb-6 text-sm">{error}</div>}
         
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Name</label>
+            <label className="block text-sm font-medium text-slate-300 mb-1">Name</label>
             <input
               type="text"
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 mt-1 border rounded-md"
+              className="w-full px-4 py-2.5 bg-slate-900/50 border border-white/10 rounded-lg focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500/50 text-slate-100 transition-all outline-none"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Email</label>
+            <label className="block text-sm font-medium text-slate-300 mb-1">Email</label>
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 mt-1 border rounded-md"
+              className="w-full px-4 py-2.5 bg-slate-900/50 border border-white/10 rounded-lg focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500/50 text-slate-100 transition-all outline-none"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Password</label>
+            <label className="block text-sm font-medium text-slate-300 mb-1">Password</label>
             <input
               type="password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 mt-1 border rounded-md"
+              className="w-full px-4 py-2.5 bg-slate-900/50 border border-white/10 rounded-lg focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500/50 text-slate-100 transition-all outline-none"
             />
           </div>
-          <Button type="submit" className="w-full">Register</Button>
+          <Button type="submit" className="w-full bg-teal-600 hover:bg-teal-500 text-white shadow-lg shadow-teal-500/20 py-6 text-lg rounded-xl mt-4">Register</Button>
         </form>
         
-        <div className="text-sm text-center">
-          Already have an account? <Link href="/login" className="text-blue-600 hover:underline">Login</Link>
-        </div>
+        <p className="mt-6 text-center text-slate-400">
+          Already have an account? <Link href="/login" className="text-teal-400 hover:text-teal-300 font-medium transition-colors">Login</Link>
+        </p>
       </div>
     </div>
   );
