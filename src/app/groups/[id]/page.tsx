@@ -4,7 +4,8 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
-export default async function GroupDetailPage({ params }: { params: { id: string } }) {
+export default async function GroupDetailPage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const session = await getSession();
   if (!session) redirect('/login');
 
@@ -60,7 +61,7 @@ export default async function GroupDetailPage({ params }: { params: { id: string
   // 3. Simplify Net Pairwise (A owes B 500, B owes A 200 => A owes B 300)
   const netBalances: { from: string, to: string, amount: number, fromName: string, toName: string }[] = [];
   
-  const userMap = new Map(group.members.map(m => [m.userId, m.user.name]));
+  const userMap = new Map<string, string>(group.members.map((m: any) => [m.userId, m.user.name]));
 
   const processedPairs = new Set<string>();
   group.members.forEach(m1 => {

@@ -3,12 +3,13 @@ import prisma from '@/lib/prisma';
 import { getSession } from '@/lib/auth';
 import { calculateSplits } from '@/lib/balanceCalculator';
 
-export async function POST(request: Request, { params }: { params: { id: string } }) {
+export async function POST(request: Request, props: { params: Promise<{ id: string }> }) {
   try {
     const session = await getSession();
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const { expenses, anomalies } = await request.json();
+    const params = await props.params;
     const groupId = params.id;
 
     // Verify group exists and user is admin/member
@@ -17,11 +18,10 @@ export async function POST(request: Request, { params }: { params: { id: string 
       include: { members: { include: { user: true } } }
     });
     if (!group) return NextResponse.json({ error: 'Group not found' }, { status: 404 });
-
-    const usersData = group.members.map(m => ({ id: m.userId, name: m.user.name }));
+    const usersData = group.members.map((m: any) => ({ id: m.userId, name: m.user.name }));
 
     // Run in a transaction
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: any) => {
       // Create anomalies for the report
       for (const anom of anomalies) {
         await tx.importAnomaly.create({

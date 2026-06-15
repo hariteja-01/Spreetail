@@ -6,7 +6,10 @@ import { Button } from '@/components/ui/button';
 import { parseExpensesCsv, ParsedAnomaly, NormalizedExpense } from '@/lib/csvParser';
 import Link from 'next/link';
 
-export default function ImportCsvPage({ params }: { params: { id: string } }) {
+import { use } from 'react';
+
+export default function ImportCsvPage(props: { params: Promise<{ id: string }> }) {
+  const params = use(props.params);
   const [file, setFile] = useState<File | null>(null);
   const [parsedData, setParsedData] = useState<{ expenses: NormalizedExpense[], globalAnomalies: ParsedAnomaly[] } | null>(null);
   const [isImporting, setIsImporting] = useState(false);
