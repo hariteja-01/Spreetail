@@ -11,7 +11,7 @@ FairShare is a full-stack web application designed to solve complex, messy share
 - **Premium Glassmorphism UI:** Built with Tailwind CSS featuring a sleek dark mode aesthetic.
 
 ## 🚀 Live Deployment
-**App URL:** https://spreetail-assignment-production.up.railway.app/ (or replace with your actual Vercel/Railway link)
+**App URL:** https://spreetail-zeta.vercel.app/
 **Database:** Hosted on Neon (Serverless PostgreSQL)
 
 ## 🛠 Tech Stack
