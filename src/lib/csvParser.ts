@@ -79,6 +79,14 @@ export async function parseExpensesCsv(csvText: string): Promise<{ expenses: Nor
       skipEmptyLines: true,
       transformHeader: (header) => header.trim().toLowerCase(),
       complete: (results) => {
+        const headers = results.meta.fields || [];
+        const requiredHeaders = ['amount', 'date', 'description', 'paid_by'];
+        const missing = requiredHeaders.filter(h => !headers.includes(h));
+        
+        if (missing.length > 0) {
+          return reject(new Error(`Invalid CSV file. Missing required columns: ${missing.join(', ')}. Please upload a valid Splitwise export.`));
+        }
+
         const normalized: NormalizedExpense[] = [];
         const globalAnomalies: ParsedAnomaly[] = [];
         const hashes = new Set<string>();
@@ -251,6 +259,10 @@ export async function parseExpensesCsv(csvText: string): Promise<{ expenses: Nor
             anomalies: rowAnomalies
           });
         });
+
+        if (normalized.length === 0) {
+          return reject(new Error('This CSV file contains no valid expense rows. Every row was skipped due to missing or invalid data. Please upload the correct Splitwise export.'));
+        }
 
         resolve({ expenses: normalized, globalAnomalies });
       },

@@ -28,8 +28,8 @@ export default function ImportCsvPage(props: { params: Promise<{ id: string }> }
       const text = await file.text();
       const result = await parseExpensesCsv(text);
       setParsedData(result);
-    } catch (err) {
-      setError('Failed to parse CSV');
+    } catch (err: any) {
+      setError(err?.message || 'Failed to parse CSV');
     }
   };
 
