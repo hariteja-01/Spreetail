@@ -67,4 +67,4 @@ For a detailed breakdown of three specific instances where the AI produced incor
 - `SCOPE.md`: Contains the exhaustive Anomaly Log (detailing how each of the 12+ CSV errors was handled) and the Database Schema justification.
 - `DECISIONS.md`: Details the options considered and rationale for major architectural and product decisions.
 - `AI_USAGE.md`: Details how AI was directed, including 3 specific correction cases.
-- `Import Report`: Generated dynamically within the application UI when a user uploads the CSV.
+- `IMPORT_REPORT.md`: A static log of the exact anomalies detected (and actions taken) when ingesting the provided `expenses_export.csv` file. You can also dynamically download this report directly from the App UI during the import process by clicking "Download Report as Text".

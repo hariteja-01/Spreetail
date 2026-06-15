@@ -66,6 +66,40 @@ export default function ImportCsvPage(props: { params: Promise<{ id: string }> }
     }
   };
 
+  const handleDownloadReport = () => {
+    if (!parsedData) return;
+    
+    let reportText = "FairShare Import Report\n=======================\n\n";
+    
+    if (parsedData.globalAnomalies.length > 0) {
+      reportText += "Global Anomalies:\n";
+      parsedData.globalAnomalies.forEach(anom => {
+        reportText += `- Row ${anom.rowNumber}: [${anom.issueType}] -> ${anom.resolution}\n`;
+      });
+      reportText += "\n";
+    }
+
+    reportText += "Expense Anomalies:\n";
+    parsedData.expenses.forEach(exp => {
+      if (exp.anomalies.length > 0) {
+        reportText += `\nRow ${exp.rowNumber}: ${exp.description} (Paid by ${exp.paidByStr})\n`;
+        exp.anomalies.forEach(anom => {
+          reportText += `  - [${anom.severity}] ${anom.issueType}: ${anom.resolution}\n`;
+        });
+      }
+    });
+
+    const blob = new Blob([reportText], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'import_report.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-8">
       <div className="flex justify-between items-center">
@@ -135,6 +169,9 @@ export default function ImportCsvPage(props: { params: Promise<{ id: string }> }
             <div className="flex gap-4 pt-6 border-t border-white/10">
               <Button onClick={handleImport} disabled={isImporting} className="bg-teal-600 hover:bg-teal-500 text-white shadow-lg shadow-teal-500/20 px-8">
                 {isImporting ? 'Importing...' : 'Approve & Import'}
+              </Button>
+              <Button onClick={handleDownloadReport} variant="secondary" className="bg-slate-700 hover:bg-slate-600 text-white shadow-lg shadow-slate-900/20 px-6">
+                Download Report as Text
               </Button>
               <Button variant="outline" onClick={() => setParsedData(null)} className="border-white/20 hover:bg-white/10">Cancel</Button>
             </div>
