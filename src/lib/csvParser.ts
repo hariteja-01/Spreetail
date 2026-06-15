@@ -77,6 +77,7 @@ export async function parseExpensesCsv(csvText: string): Promise<{ expenses: Nor
     Papa.parse<RawCsvExpense>(csvText, {
       header: true,
       skipEmptyLines: true,
+      transformHeader: (header) => header.trim().toLowerCase(),
       complete: (results) => {
         const normalized: NormalizedExpense[] = [];
         const globalAnomalies: ParsedAnomaly[] = [];

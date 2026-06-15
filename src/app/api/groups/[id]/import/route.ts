@@ -22,6 +22,41 @@ export async function POST(request: Request, props: { params: Promise<{ id: stri
 
     // Run in a transaction
     await prisma.$transaction(async (tx: any) => {
+      
+      // Auto-create missing participants found in the CSV
+      const participants = new Set<string>();
+      expenses.forEach((e: any) => {
+        participants.add(e.paidByStr);
+        e.splitWithStr.forEach((s: string) => participants.add(s));
+      });
+
+      for (const pName of Array.from(participants)) {
+        let existingUser = usersData.find((u: any) => u.name.toLowerCase() === pName.toLowerCase());
+        if (!existingUser) {
+          // Check if user exists globally
+          let dbUser = await tx.user.findFirst({ where: { name: { equals: pName, mode: 'insensitive' } } });
+          if (!dbUser) {
+            // Create dummy user
+            dbUser = await tx.user.create({
+              data: {
+                name: pName,
+                email: `${pName.replace(/\s/g, '').toLowerCase()}@guest.local`,
+                password: 'dummy_password'
+              }
+            });
+          }
+          // Add to group
+          await tx.groupMember.create({
+            data: {
+              groupId,
+              userId: dbUser.id,
+              joinedAt: new Date('2026-01-01') // Join early so temporal logic works
+            }
+          });
+          usersData.push({ id: dbUser.id, name: dbUser.name });
+        }
+      }
+
       // Create anomalies for the report
       for (const anom of anomalies) {
         await tx.importAnomaly.create({
@@ -38,9 +73,9 @@ export async function POST(request: Request, props: { params: Promise<{ id: stri
       for (const exp of expenses) {
         if (exp.isSettlement) {
           // It's a payment
-          const payer = usersData.find(u => u.name.toLowerCase() === exp.paidByStr.toLowerCase());
+          const payer = usersData.find((u: any) => u.name.toLowerCase() === exp.paidByStr.toLowerCase());
           const payeeNameStr = exp.splitWithStr[0] || 'Unknown';
-          let payee = usersData.find(u => u.name.toLowerCase() === payeeNameStr.toLowerCase());
+          let payee = usersData.find((u: any) => u.name.toLowerCase() === payeeNameStr.toLowerCase());
           
           if (payer && payee) {
              await tx.payment.create({
@@ -57,7 +92,7 @@ export async function POST(request: Request, props: { params: Promise<{ id: stri
         }
 
         // It's an expense
-        const payer = usersData.find(u => u.name.toLowerCase() === exp.paidByStr.toLowerCase());
+        const payer = usersData.find((u: any) => u.name.toLowerCase() === exp.paidByStr.toLowerCase());
         if (!payer) continue; // Skip if payer not found in group
 
         const createdExpense = await tx.expense.create({
