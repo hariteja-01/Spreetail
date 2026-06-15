@@ -50,7 +50,7 @@ export async function POST(request: Request, props: { params: Promise<{ id: stri
             });
           }
           // Add to group
-          await tx.groupMember.create({
+          const newMember = await tx.groupMember.create({
             data: {
               groupId,
               userId: dbUser.id,
@@ -58,18 +58,19 @@ export async function POST(request: Request, props: { params: Promise<{ id: stri
             }
           });
           usersData.push({ id: dbUser.id, name: dbUser.name });
+          group.members.push({ ...newMember, user: dbUser } as any);
         }
       }
 
-      // Create anomalies for the report
-      for (const anom of anomalies) {
-        await tx.importAnomaly.create({
-          data: {
+      // Create anomalies for the report in one batch!
+      if (anomalies.length > 0) {
+        await tx.importAnomaly.createMany({
+          data: anomalies.map((anom: any) => ({
             groupId,
             rowNumber: anom.rowNumber,
             issueType: anom.issueType,
             resolution: anom.resolution,
-          }
+          }))
         });
       }
 
@@ -99,7 +100,11 @@ export async function POST(request: Request, props: { params: Promise<{ id: stri
         const payer = usersData.find((u: any) => u.name.toLowerCase() === exp.paidByStr.toLowerCase());
         if (!payer) continue; // Skip if payer not found in group
 
-        const createdExpense = await tx.expense.create({
+        // Calculate exact splits using the UPDATED group.members array!
+        const splits = calculateSplits(exp, group.members, usersData);
+
+        // Create the expense and its splits in a single optimized transaction
+        await tx.expense.create({
           data: {
             groupId,
             description: exp.description,
@@ -108,20 +113,14 @@ export async function POST(request: Request, props: { params: Promise<{ id: stri
             date: new Date(exp.date),
             paidById: payer.id,
             splitType: exp.splitType,
+            splits: {
+              create: splits.map(split => ({
+                userId: split.userId,
+                amount: split.amountOwed
+              }))
+            }
           }
         });
-
-        // Calculate exact splits
-        const splits = calculateSplits(exp, group.members, usersData);
-        for (const split of splits) {
-           await tx.expenseSplit.create({
-             data: {
-               expenseId: createdExpense.id,
-               userId: split.userId,
-               amount: split.amountOwed,
-             }
-           });
-        }
       }
     });
 
