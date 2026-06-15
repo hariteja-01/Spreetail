@@ -40,24 +40,27 @@ export function AddMemberForm({ groupId }: { groupId: string }) {
   };
 
   return (
-    <div className="mt-4 p-4 bg-slate-900/50 rounded-xl border border-white/5">
-      <h3 className="text-sm font-semibold text-slate-300 mb-3">Add New Member</h3>
+    <div className="mt-6 p-5 bg-white/10 backdrop-blur-md rounded-xl border border-teal-500/30 shadow-lg">
+      <h3 className="text-sm font-bold text-teal-400 mb-3 flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+        Add New Member
+      </h3>
       <form onSubmit={handleAddMember} className="flex gap-3 items-start">
         <div className="flex-1">
           <input
             type="text"
-            placeholder="Enter member's name..."
+            placeholder="Type a new member's name..."
             value={name}
             onChange={(e) => setName(e.target.value)}
             disabled={isAdding}
-            className="w-full px-4 py-2 bg-black/40 border border-white/10 rounded-lg focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500/50 text-slate-100 outline-none text-sm"
+            className="w-full px-4 py-2.5 bg-slate-900/80 border border-teal-500/50 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-teal-400 text-slate-100 outline-none text-sm font-medium placeholder:text-slate-500 transition-all shadow-inner"
           />
-          {error && <p className="text-red-400 text-xs mt-2">{error}</p>}
+          {error && <p className="text-red-400 text-xs mt-2 font-medium">{error}</p>}
         </div>
         <Button 
           type="submit" 
           disabled={!name.trim() || isAdding}
-          className="bg-teal-600 hover:bg-teal-500 text-white shadow-lg shadow-teal-500/20 whitespace-nowrap"
+          className="bg-teal-500 hover:bg-teal-400 text-slate-900 font-bold shadow-lg shadow-teal-500/30 whitespace-nowrap px-6"
         >
           {isAdding ? 'Adding...' : 'Add Member'}
         </Button>

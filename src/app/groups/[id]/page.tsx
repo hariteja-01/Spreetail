@@ -165,7 +165,7 @@ export default async function GroupDetailPage(props: { params: Promise<{ id: str
                       {m.userId === owner.userId && <span className="text-sky-400 text-xs ml-2 bg-sky-500/10 px-2 py-0.5 rounded-full">Owner</span>}
                     </div>
                     {isOwner && m.userId !== session.id && !m.leftAt && (
-                      <div className="opacity-0 group-hover/member:opacity-100 transition-opacity">
+                      <div className="transition-opacity">
                         <RemoveMemberButton groupId={group.id} memberId={m.userId} />
                       </div>
                     )}
