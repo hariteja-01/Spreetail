@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FairShare - Shared Expenses App (Spreetail Assignment)
 
-## Getting Started
+## Overview
+FairShare is a full-stack web application designed to solve complex, messy shared expense tracking. It was built specifically to address the assignment prompt featuring four flatmates (Aisha, Rohan, Priya, Meera) and their chaotic `expenses_export.csv` data.
 
-First, run the development server:
+**Key Features Implemented:**
+- **Robust CSV Import Engine:** Safely parses, validates, and interactively flags 12+ deliberate data anomalies (duplicates, temporal issues, multi-currency, string formatting) rather than failing silently or guessing.
+- **Temporal Group Membership:** Mathematically accounts for when members joined (Sam in April) and left (Meera in March) to ensure bills are split correctly against the active roster on the date of the expense.
+- **Transparent Ledger Accounting:** Calculates exact pairwise debts (who owes whom) in $O(N)$ time instead of a "Simplify Debts" graph algorithm, guaranteeing complete transparency ("no magic numbers").
+- **Multi-Currency Normalization:** Handles USD/INR mixes natively within the CSV import by standardizing to a base currency.
+- **Premium Glassmorphism UI:** Built with Tailwind CSS featuring a sleek dark mode aesthetic.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 Live Deployment
+**App URL:** https://spreetail-assignment-production.up.railway.app/ (or replace with your actual Vercel/Railway link)
+**Database:** Hosted on Neon (Serverless PostgreSQL)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠 Tech Stack
+- **Frontend & Backend Framework:** Next.js 16 (App Router)
+- **Database:** PostgreSQL (Neon)
+- **ORM:** Prisma
+- **Styling:** Tailwind CSS + Vanilla CSS (Glassmorphism Dark Theme)
+- **CSV Engine:** PapaParse (with rigorous pre-validation and interactive resolution UI)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 💻 Local Setup Instructions
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/hariteja-01/Spreetail.git
+   cd Spreetail
+   ```
 
-## Learn More
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+3. **Configure Environment Variables:**
+   Create a `.env` file in the root directory:
+   ```env
+   # Your Neon Postgres connection string
+   DATABASE_URL="postgresql://user:password@hostname/db?sslmode=require"
+   
+   # JWT Secret for authentication
+   JWT_SECRET="your-secure-secret"
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. **Initialize the Database:**
+   Push the Prisma schema to your Postgres instance:
+   ```bash
+   npx prisma db push
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+5. **Run the Development Server:**
+   ```bash
+   npm run dev
+   ```
+   Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Deploy on Vercel
+## 🤖 AI Usage Disclosure
+In accordance with modern engineering practices and the assignment rubric, I used Google's Gemini as an AI pair-programmer for this project.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The AI was highly effective for generating CSS boilerplate and scaffolding Prisma schemas. However, it struggled significantly with the complex domain logic specific to the assignment constraints (temporal memberships, balance calculation transparency). As the engineer of record, I had to architect the solutions, direct the AI, and manually override its generated logic to ensure the product met the real-world requirements.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+For a detailed breakdown of three specific instances where the AI produced incorrect logic and how I caught and fixed it, please refer to the `AI_USAGE.md` document in this repository.
+
+## 📄 Required Documentation
+- `SCOPE.md`: Contains the exhaustive Anomaly Log (detailing how each of the 12+ CSV errors was handled) and the Database Schema justification.
+- `DECISIONS.md`: Details the options considered and rationale for major architectural and product decisions.
+- `AI_USAGE.md`: Details how AI was directed, including 3 specific correction cases.
+- `Import Report`: Generated dynamically within the application UI when a user uploads the CSV.
