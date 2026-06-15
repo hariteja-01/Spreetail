@@ -31,16 +31,20 @@ export async function POST(request: Request, props: { params: Promise<{ id: stri
       });
 
       for (const pName of Array.from(participants)) {
+        if (!pName || pName.trim() === '') continue; // Skip empty names
+        
         let existingUser = usersData.find((u: any) => u.name.toLowerCase() === pName.toLowerCase());
         if (!existingUser) {
           // Check if user exists globally
           let dbUser = await tx.user.findFirst({ where: { name: { equals: pName, mode: 'insensitive' } } });
           if (!dbUser) {
-            // Create dummy user
+            // Create dummy user with guaranteed unique email
+            const safeName = pName.replace(/[^a-zA-Z0-9]/g, '').toLowerCase() || 'unknown';
+            const uniqueId = Math.random().toString(36).substring(2, 8);
             dbUser = await tx.user.create({
               data: {
                 name: pName,
-                email: `${pName.replace(/\s/g, '').toLowerCase()}@guest.local`,
+                email: `${safeName}_${uniqueId}@guest.local`,
                 password: 'dummy_password'
               }
             });
