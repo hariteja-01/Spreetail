@@ -2,7 +2,7 @@ import { jwtVerify, SignJWT } from 'jose';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
-const secretKey = process.env.NEXTAUTH_SECRET || 'super-secret-key-for-local-dev';
+const secretKey = process.env.NEXTAUTH_SECRET || 'development_environment_fallback_key_12345';
 const key = new TextEncoder().encode(secretKey);
 
 export async function encrypt(payload: any) {
