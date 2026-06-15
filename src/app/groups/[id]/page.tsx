@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { DeleteGroupButton } from '@/components/DeleteGroupButton';
 import { AddMemberForm } from '@/components/AddMemberForm';
+import { RemoveMemberButton } from '@/components/RemoveMemberButton';
 
 export default async function GroupDetailPage(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
@@ -95,6 +96,10 @@ export default async function GroupDetailPage(props: { params: Promise<{ id: str
   const myOwes = netBalances.filter(b => b.from === session.id);
   const owedToMe = netBalances.filter(b => b.to === session.id);
 
+  // Determine group owner (earliest joined)
+  const owner = [...group.members].sort((a, b) => new Date(a.joinedAt).getTime() - new Date(b.joinedAt).getTime())[0];
+  const isOwner = session.id === owner.userId;
+
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-8">
       <div className="flex justify-between items-center">
@@ -152,8 +157,19 @@ export default async function GroupDetailPage(props: { params: Promise<{ id: str
             <h2 className="text-xl font-semibold mb-4 text-slate-100">Members</h2>
             <ul className="space-y-4">
               {group.members.map(m => (
-                <li key={m.id} className="text-sm flex flex-col gap-1">
-                  <div className="font-medium text-slate-200">{m.user.name} {m.userId === session.id && <span className="text-teal-400 text-xs ml-1 bg-teal-500/10 px-2 py-0.5 rounded-full">You</span>}</div>
+                <li key={m.id} className="text-sm flex flex-col gap-1 relative group/member p-2 -mx-2 rounded-lg hover:bg-white/5 transition-colors">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <span className="font-medium text-slate-200">{m.user.name}</span>
+                      {m.userId === session.id && <span className="text-teal-400 text-xs ml-2 bg-teal-500/10 px-2 py-0.5 rounded-full">You</span>}
+                      {m.userId === owner.userId && <span className="text-sky-400 text-xs ml-2 bg-sky-500/10 px-2 py-0.5 rounded-full">Owner</span>}
+                    </div>
+                    {isOwner && m.userId !== session.id && !m.leftAt && (
+                      <div className="opacity-0 group-hover/member:opacity-100 transition-opacity">
+                        <RemoveMemberButton groupId={group.id} memberId={m.userId} />
+                      </div>
+                    )}
+                  </div>
                   <div className="text-xs text-slate-500">
                     Joined: {new Date(m.joinedAt).toLocaleDateString()}
                     {m.leftAt && <span className="text-red-400"> | Left: {new Date(m.leftAt).toLocaleDateString()}</span>}

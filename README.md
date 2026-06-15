@@ -8,7 +8,7 @@ FairShare is a full-stack web application designed to solve complex, messy share
 - **Temporal Group Membership:** Mathematically accounts for when members joined (Sam in April) and left (Meera in March) to ensure bills are split correctly against the active roster on the date of the expense.
 - **Transparent Ledger Accounting:** Calculates exact pairwise debts (who owes whom) in $O(N)$ time instead of a "Simplify Debts" graph algorithm, guaranteeing complete transparency ("no magic numbers").
 - **Multi-Currency Normalization:** Handles USD/INR mixes natively within the CSV import by standardizing to a base currency.
-- **Secure Group Management:** Complete group lifecycle handling including creation, adding custom members on the fly, and secure group deletion with cascading dependency removal.
+- **Secure Group Management:** Complete group lifecycle handling including creation, adding/removing custom members dynamically, and secure group deletion with cascading dependency removal.
 - **Premium Glassmorphism UI:** Built with Tailwind CSS featuring a sleek dark mode aesthetic.
 
 ## 🚀 Live Deployment
