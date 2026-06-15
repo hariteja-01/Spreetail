@@ -3,6 +3,7 @@ import prisma from '@/lib/prisma';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { DeleteGroupButton } from '@/components/DeleteGroupButton';
 
 export default async function GroupDetailPage(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
@@ -101,8 +102,9 @@ export default async function GroupDetailPage(props: { params: Promise<{ id: str
           <p className="text-slate-400 mt-2 font-medium">Base Currency: <span className="text-teal-400">{group.currency}</span></p>
         </div>
         <div className="flex gap-4">
-          <Link href="/dashboard"><Button variant="outline">Dashboard</Button></Link>
-          <Link href={`/groups/${group.id}/import`}><Button>Import CSV</Button></Link>
+          <Link href="/dashboard"><Button variant="outline" className="border-white/20 hover:bg-white/10 rounded-full px-6 py-2">Dashboard</Button></Link>
+          <Link href={`/groups/${group.id}/import`}><Button className="bg-teal-600 hover:bg-teal-500 rounded-full px-6 py-2">Import CSV</Button></Link>
+          <DeleteGroupButton groupId={group.id} />
         </div>
       </div>
 
