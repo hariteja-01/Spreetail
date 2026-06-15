@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { DeleteGroupButton } from '@/components/DeleteGroupButton';
+import { AddMemberForm } from '@/components/AddMemberForm';
 
 export default async function GroupDetailPage(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
@@ -160,6 +161,7 @@ export default async function GroupDetailPage(props: { params: Promise<{ id: str
                 </li>
               ))}
             </ul>
+            <AddMemberForm groupId={group.id} />
           </div>
         </div>
 
